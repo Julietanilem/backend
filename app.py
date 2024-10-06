@@ -57,7 +57,7 @@ def generate_question():
         prompt = f"Genera una pregunta aleatoria sobre cualquier aspecto del exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
         prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
         prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
-        prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano"
+        prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano.Recuerda elegir aspectos variados del planeta, cualquier aspecto suyo"
 
         # Generar la pregunta usando Gemini
         model = genai.GenerativeModel('gemini-1.5-flash')  # O gemini-1.5-pro, dependiendo de tu necesidad
