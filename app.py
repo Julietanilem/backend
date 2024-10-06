@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 CORS(app)  # Permitir solicitudes CORS
 
-@app.route('/api/exoplaneta', methods=['POST'])
+@app.route('/', methods=['POST'])
 def obtener_info_exoplaneta():
     data = request.get_json()
     nombre_exoplaneta = data.get('nombre')
