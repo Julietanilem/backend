@@ -59,21 +59,27 @@ def generate_question():
         # Crear un prompt para el modelo de Gemini
         prompt = f"Genera una pregunta aleatoria sobre el exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
         prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
-        prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : { 'question': , 'answers': ['answer1', 'answer2', 'answer3'], 'correct_answer': 'answer3'}"
+        prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
+        prompt += "{ 'question': , 'answers': ['answer1', 'answer2', 'answer3'], 'correct_answer': 'answer3'}"
 
-        print(prompt)
-        
         # Generar la pregunta usando Gemini
         model = genai.GenerativeModel('gemini-1.5-flash')  # O gemini-1.5-pro, dependiendo de tu necesidad
         response = model.generate_content(prompt)
-        question = response.text  # Extraer el texto de la respuesta
+        res = response.text  # Extraer el texto de la respuesta
+        
+        
+        res.replace("\\s", "")
 
-        return jsonify({"question": question})
+        #res a json
+        res = json.loads(res)
+
+
+        return res
 
     except Exception as e:
         return jsonify({"error": str(e)})
 
-@app.route('/check_answer', methods=['POST'])
+@app.route('/check-answer', methods=['POST'])
 def check_answer():
     data = request.json
     user_answer = data.get('answer', '').strip().lower()
