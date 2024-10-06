@@ -5,6 +5,5 @@ gunicorn
 Flask-SocketIO==5.3.3
 jsonify
 jsonify
-random
 os
 google-generativeai
