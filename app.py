@@ -54,7 +54,7 @@ def generate_question():
             stars = exoplanet['sy_snum']
             planets = exoplanet['sy_pnum']
         except Exception as e:
-            return jsonify({"error del 2": str(e)})
+            return jsonify({"error del obtener datos de los planetas": str(e)})
 
         try:
             # Crear un prompt para el modelo de Gemini
@@ -63,7 +63,7 @@ def generate_question():
             prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
             prompt += '{ "question": q , "answers": ["answer1", "answer2" , "answer3" ], "correct_answer": a }  en texto plano.Recuerda elegir aspectos variados del planeta, cualquier aspecto suyo. Preguntas diferentes al metodo de descubrimiento'
         except Exception as e:
-            return jsonify({"error del 3": str(e)})
+            return jsonify({"error del leer datos de planetas": str(e)})
         
         try:
             # Generar la pregunta usando Gemini
@@ -71,13 +71,13 @@ def generate_question():
             response = model.generate_content(prompt)
             res = response.text  # Extraer el texto de la respuesta
         except Exception as e:
-            return jsonify({"error del 4": str(e)})
+            return jsonify({"error del modelo": str(e)})
         
         try:
             res = res.replace("```json", "").replace("```", "").lstrip()
             res =  json.loads(res)
         except Exception as e:
-            return jsonify({"error del 5:"+res: str(e)})
+            return jsonify({"error del parse a json:"+res: str(e)})
 
 
         return jsonify(res)
@@ -95,27 +95,16 @@ def check_answer():
     answers = data.get('answers', '')
     
 
-    prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}.El usuario respondió {user_answer}. ¿El usuario esta respondiendo la pregunta?. Responde Sí o No"
-    
-
-    # Generar la pregunta usando Gemini
-    model = genai.GenerativeModel('gemini-1.5-flash') 
-    response = model.generate_content(prompt)
-    res = response.text.replace(r"[^A-Za-z]", "").lower() 
-    if "si" in res:
-        prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}. El usuario respondió {user_answer}.¿El usuario esta respondiendo la pregunta correctamente?. Responde Sí o No"
-        response = model.generate_content(prompt)
-        if "si" in response.text.lower():
-            result = "correcto"
-        else:
-            result = "incorrecto"
+    if user_answer == correct_answer:
+        result = "Correcto"
     else:
-        prompt = f"El siguiente texto tiene relacion , con la nasa o  el espacio y es cientifico: {user_answer}. Si no es así, contesta 'Lo siento, no puedo contestar', si si es así contesta a la pregunta: {user_answer}"
-        result = model.generate_content(prompt)
+        result = "Incorrecto"
+        
     
 
 
-    return jsonify({"result": result})
+
+    return jsonify({"result":result })
 
 #caso en que solo se entra sin nada
 @app.route('/')
