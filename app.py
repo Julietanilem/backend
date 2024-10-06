@@ -88,10 +88,12 @@ def generate_question():
 #procesar respuesta
 @app.route('/check-answer', methods=['POST'])
 def check_answer():
-    data = request.json
-    user_answer = data.get('answer', '').lstrip().lower()
-    correct_answer = data.get('correct_answer', '').lstrip().lower()
-    
+    try:
+        data = request.json
+        user_answer = data.get('answer', '').lstrip().lower()
+        correct_answer = data.get('correct_answer', '').lstrip().lower()
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
     if user_answer == correct_answer or user_answer ==  correct_answer[0] or user_answer ==  correct_answer[0] + ")" or user_answer== correct_answer[3,]:
         result = "Correcto"
