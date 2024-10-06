@@ -35,7 +35,7 @@ def get_exoplanet_data():
         print(f"Error al obtener datos del archivo data.json: {str(e)}")
         return None
 
-@app.route('/generate_question', methods=['GET'])
+@app.route('/generate_question')
 def generate_question():
     try:
         print("Obteniendo información de los exoplanetas...")
