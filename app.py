@@ -59,7 +59,7 @@ def generate_question():
         # Crear un prompt para el modelo de Gemini
         prompt = f"Genera una pregunta aleatoria sobre el exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
         prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
-        prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta. Debes hacer esto en el formato json siguiente : { 'question': , 'answers': ['answer1', 'answer2', 'answer3'], 'correct_answer': 'answer3'}"
+        prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : { 'question': , 'answers': ['answer1', 'answer2', 'answer3'], 'correct_answer': 'answer3'}"
 
         print(prompt)
         
