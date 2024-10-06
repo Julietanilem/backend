@@ -95,7 +95,7 @@ def check_answer():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-    if user_answer == correct_answer or user_answer ==  correct_answer[0] or user_answer ==  correct_answer[0] + ")" or user_answer== correct_answer[3,]:
+    if user_answer == correct_answer:
         result = "Correcto"
     else:
         result = "Incorrecto"
