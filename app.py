@@ -26,8 +26,6 @@ def get_exoplanet_data():
     try:
         with open("data.json", "r") as json_file:
             data = json.load(json_file)
-            print(f"Se encontraron {len(data)} exoplanetas en el archivo.")
-            print(data)
             indice = random.randint(0, len(data)-1)
             return data[indice]
 
@@ -38,7 +36,6 @@ def get_exoplanet_data():
 @app.route('/generate_question')
 def generate_question():
     try:
-        print("Obteniendo información de los exoplanetas...")
         exoplanet = get_exoplanet_data()
         if not exoplanet:
             return jsonify({"error": "No se encontraron exoplanetas en el archivo."})
@@ -60,7 +57,7 @@ def generate_question():
         prompt = f"Genera una pregunta aleatoria sobre el exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
         prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
         prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
-        prompt += "{ 'question': , 'answers': ['answer1', 'answer2', 'answer3'], 'correct_answer': 'answer3'}"
+        prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano"
 
         # Generar la pregunta usando Gemini
         model = genai.GenerativeModel('gemini-1.5-flash')  # O gemini-1.5-pro, dependiendo de tu necesidad
@@ -68,13 +65,28 @@ def generate_question():
         res = response.text  # Extraer el texto de la respuesta
         
         
-        res.replace("\\s", "")
+        res = res.replace("\\s", "")
+        res =res.replace("\n", "")
+        res = res.replace("{", "").lstrip()
+        partes = res.split(":")
 
-        #res a json
-        res = json.loads(res)
+        question = partes[1]
+        question = question.split("\"")[1]
+
+        answers = partes[2]
+        answers = answers.replace("\"", "").replace( "[", "").split("]")[0]
+        answers = answers.replace("\\s", "").lstrip()
+        answers = answers.split(",")
+        answers = [answer.lstrip() for answer in answers]
+
+        print(answers)
+
+        resCorrecta = partes[3]
+        resCorrecta =  resCorrecta.split("\"")[1]
+            #res a json
 
 
-        return res
+        return jsonify({"question": question, "answers": answers, "correct_answer": resCorrecta})
 
     except Exception as e:
         return jsonify({"error": str(e)})
