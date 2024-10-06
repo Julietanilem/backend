@@ -54,7 +54,7 @@ def generate_question():
         planets = exoplanet['sy_pnum']
 
         # Crear un prompt para el modelo de Gemini
-        prompt = f"Genera una pregunta aleatoria sobre el exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
+        prompt = f"Genera una pregunta aleatoria sobre cualquier aspecto del exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
         prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
         prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
         prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano"
@@ -91,11 +91,39 @@ def generate_question():
     except Exception as e:
         return jsonify({"error": str(e)})
 
+#procesar respuesta
 @app.route('/check-answer', methods=['POST'])
 def check_answer():
     data = request.json
     user_answer = data.get('answer', '').strip().lower()
     correct_answer = data.get('correct_answer', '').strip().lower()
+    question = data.get('question', '').strip().lower()
+    answers = data.get('answers', '')
+    
+    prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}.El usuario respondió {user_answer}. ¿El usuario esta respondiendo la pregunta?. Responde Sí o No"
+    
+    
+
+    # Generar la pregunta usando Gemini
+    model = genai.GenerativeModel('gemini-1.5-flash') 
+    response = model.generate_content(prompt)
+    res = response.text.replace("[A-Za-z]", "").lower() 
+
+    if "si" in res:
+        prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}. El usuario respondió {user_answer}.¿El usuario esta respondiendo la pregunta correctamente?. Responde Sí o No"
+        response = model.generate_content(prompt)
+        if "si" in response.text:
+            result = "correcto"
+        else:
+            result = "incorrecto"
+
+    else:
+        prompt = f"El siguiente texto tiene relacion , con la nasa o  el espacio y es cientifico: {user_answer}. Si no es así, contesta 'Lo siento, no puedo contestar', si si es así contesta a la pregunta: {user_answer}"
+        response = model.generate_content(prompt)
+        result = response.text
+        
+
+    
 
     if user_answer == correct_answer:
         result = "correcto"
