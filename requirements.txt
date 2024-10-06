@@ -3,7 +3,4 @@ flask-cors
 requests
 gunicorn
 Flask-SocketIO==5.3.3
-jsonify
-jsonify
-os
 google-generativeai
