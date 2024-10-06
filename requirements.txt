@@ -1,10 +1,10 @@
 flask
 flask-cors
 requests
-beautifulsoup4
 gunicorn
 Flask-SocketIO==5.3.3
 jsonify
-openai
-langchain
-langchain-community
+jsonify
+random
+os
+google-generativeai
