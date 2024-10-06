@@ -40,50 +40,58 @@ def generate_question():
         if not exoplanet:
             return jsonify({"error": "No se encontraron exoplanetas en el archivo."})
 
+        try:
         # Extraer información del exoplaneta
-        planet_name = exoplanet['pl_name']
-        mass = exoplanet['pl_masse']
-        orbital_period = exoplanet['pl_orbper']
-        discovery_method = exoplanet['discoverymethod']
-        radius = exoplanet['pl_rade']
-        year = exoplanet['disc_year']
-        location = exoplanet['disc_locale']
-        distance = exoplanet['sy_dist']
-        status = exoplanet['soltype']  
-        stars = exoplanet['sy_snum']
-        planets = exoplanet['sy_pnum']
+            planet_name = exoplanet['pl_name']
+            mass = exoplanet['pl_masse']
+            orbital_period = exoplanet['pl_orbper']
+            discovery_method = exoplanet['discoverymethod']
+            radius = exoplanet['pl_rade']
+            year = exoplanet['disc_year']
+            location = exoplanet['disc_locale']
+            distance = exoplanet['sy_dist']
+            status = exoplanet['soltype']  
+            stars = exoplanet['sy_snum']
+            planets = exoplanet['sy_pnum']
+        except Exception as e:
+            return jsonify({"error del 2": str(e)})
 
-        # Crear un prompt para el modelo de Gemini
-        prompt = f"Genera una pregunta aleatoria sobre cualquier aspecto del exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
-        prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
-        prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
-        prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano.Recuerda elegir aspectos variados del planeta, cualquier aspecto suyo. Preguntas diferentes al metodo de descubrimiento"
-
-        # Generar la pregunta usando Gemini
-        model = genai.GenerativeModel('gemini-1.5-flash')  # O gemini-1.5-pro, dependiendo de tu necesidad
-        response = model.generate_content(prompt)
-        res = response.text  # Extraer el texto de la respuesta
+        try:
+            # Crear un prompt para el modelo de Gemini
+            prompt = f"Genera una pregunta aleatoria sobre cualquier aspecto del exoplaneta {planet_name}, que tiene una masa de {mass} masas de Júpiter, un período orbital de {orbital_period} días, y fue descubierto por el método de {discovery_method}. El exoplaneta tiene un radio de {radius} radios terrestres, "
+            prompt +=f"fue descubierto en el año {year} en {location}, y se encuentra a una distancia de {distance} parsecs de la Tierra. El estado del planeta es {status}, y el sistema estelar tiene {stars} estrellas y {planets} planetas." 
+            prompt += " Además, que haya tres respuestas, dos incorrectas y una correcta, las respuestas en orden aleatorio también. Debes hacer esto en el formato json siguiente : " 
+            prompt += "{ 'question': , 'answers': ['answer1' , 'answer2' , 'answer3' ], 'correct_answer': 'answer3'} donde este es un json valido en texto plano.Recuerda elegir aspectos variados del planeta, cualquier aspecto suyo. Preguntas diferentes al metodo de descubrimiento"
+        except Exception as e:
+            return jsonify({"error del 3": str(e)})
         
+        try:
+            # Generar la pregunta usando Gemini
+            model = genai.GenerativeModel('gemini-1.5-flash')  # O gemini-1.5-pro, dependiendo de tu necesidad
+            response = model.generate_content(prompt)
+            res = response.text  # Extraer el texto de la respuesta
+        except Exception as e:
+            return jsonify({"error del 4": str(e)})
         
-        res = res.replace("\\s", "")
-        res =res.replace("\n", "")
-        res = res.replace("{", "").lstrip()
-        partes = res.split(":")
+        try:
+            res = res.replace("\\s", "")
+            res =res.replace("\n", "")
+            res = res.replace("{", "").lstrip()
+            partes = res.split(":")
 
-        question = partes[1]
-        question = question.split("\"")[1]
+            question = partes[1]
+            question = question.split("\"")[1]
 
-        answers = partes[2]
-        answers = answers.replace("\"", "").replace( "[", "").split("]")[0]
-        answers = answers.replace("\\s", "").lstrip()
-        answers = answers.split(",")
-        answers = [answer.lstrip() for answer in answers]
+            answers = partes[2]
+            answers = answers.replace("\"", "").replace( "[", "").split("]")[0]
+            answers = answers.replace("\\s", "").lstrip()
+            answers = answers.split(",")
+            answers = [answer.lstrip() for answer in answers]
 
-        print(answers)
-
-        resCorrecta = partes[3]
-        resCorrecta =  resCorrecta.split("\"")[1]
-            #res a json
+            resCorrecta = partes[3]
+            resCorrecta =  resCorrecta.split("\"")[1]
+        except Exception as e:
+            return jsonify({"error del 5": str(e)})
 
 
         return jsonify({"question": question, "answers": answers, "correct_answer": resCorrecta})
