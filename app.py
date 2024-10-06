@@ -103,7 +103,6 @@ def check_answer():
 
     prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}.El usuario respondió {user_answer}. ¿El usuario esta respondiendo la pregunta?. Responde Sí o No"
     
-    result = prompt
 
     # Generar la pregunta usando Gemini
     model = genai.GenerativeModel('gemini-1.5-flash') 
@@ -112,13 +111,13 @@ def check_answer():
     if "si" in res:
         prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}. El usuario respondió {user_answer}.¿El usuario esta respondiendo la pregunta correctamente?. Responde Sí o No"
         response = model.generate_content(prompt)
-        if "si" in response.text:
+        if "si" in response.text.lower():
             result = "correcto"
         else:
             result = "incorrecto"
     else:
         prompt = f"El siguiente texto tiene relacion , con la nasa o  el espacio y es cientifico: {user_answer}. Si no es así, contesta 'Lo siento, no puedo contestar', si si es así contesta a la pregunta: {user_answer}"
-        response = model.generate_content(prompt)
+        result = model.generate_content(prompt)
         
 
 
