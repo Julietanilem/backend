@@ -86,5 +86,10 @@ def check_answer():
 
     return jsonify({"result": result})
 
+#caso en que solo se entra sin nada
+@app.route('/')
+def home():
+    return jsonify({"message": "¡Bienvenido al generador de preguntas de exoplanetas!"})
+
 if __name__ == '__main__':
     app.run(debug=True)
