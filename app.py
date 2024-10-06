@@ -101,7 +101,7 @@ def check_answer():
     answers = data.get('answers', '')
     
 
-    prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}.El usuario respondió {user_answer}. ¿El usuario esta respondiendo la pregunta?. Responde Sí o No"
+    ''' prompt= f"La siguiente pregunta es: {question}. Las opciones de respuesta son: {answers}. La respuesa correcta es: {correct_answer}.El usuario respondió {user_answer}. ¿El usuario esta respondiendo la pregunta?. Responde Sí o No"
     
 
     # Generar la pregunta usando Gemini
@@ -118,10 +118,10 @@ def check_answer():
     else:
         prompt = f"El siguiente texto tiene relacion , con la nasa o  el espacio y es cientifico: {user_answer}. Si no es así, contesta 'Lo siento, no puedo contestar', si si es así contesta a la pregunta: {user_answer}"
         result = model.generate_content(prompt)
-        
+    '''
 
 
-    return jsonify({"result": result})
+    return jsonify({"result": ("correcto" if user_answer == correct_answer  else "incorrecto")})
 
 #caso en que solo se entra sin nada
 @app.route('/')
