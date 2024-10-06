@@ -91,18 +91,12 @@ def check_answer():
     data = request.json
     user_answer = data.get('answer', '').lstrip().lower()
     correct_answer = data.get('correct_answer', '').lstrip().lower()
-    question = data.get('question', '').lstrip().lower()
-    answers = data.get('answers', '')
     
 
-    if user_answer == correct_answer or user_answer == answers[0] or user_answer == answers[0] + ")" or user_answer== correct_answer[3,]:
+    if user_answer == correct_answer or user_answer ==  correct_answer[0] or user_answer ==  correct_answer[0] + ")" or user_answer== correct_answer[3,]:
         result = "Correcto"
     else:
         result = "Incorrecto"
-        
-    
-
-
 
     return jsonify({"result":result })
 
