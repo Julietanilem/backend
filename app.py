@@ -122,11 +122,6 @@ def check_answer():
         
 
 
-    if user_answer == correct_answer:
-        result = "correcto"
-    else:
-        result = "incorrecto"
-
     return jsonify({"result": result})
 
 #caso en que solo se entra sin nada
